@@ -9,10 +9,23 @@ struct ListNode {
 typedef struct ListNode ListNode;
 typedef ListNode *ListNodePtr;
 
+void printList(struct ListNode *first) {
+  struct ListNode *current = first;
+  while (current != NULL) {
+    printf("%c ", current->data);
+    current = current->nextPtr;
+  }
+  printf("*\n");
+}
+
 struct ListNode *deleteNode(struct ListNode *first, int pos) {
+
+  if (first == NULL)
+    return first;
+
   struct ListNode *temp = first;
 
-  if (pos == 1) {
+  if (pos == 0) {
     first = temp->nextPtr;
     free(temp);
     return first;
@@ -20,13 +33,13 @@ struct ListNode *deleteNode(struct ListNode *first, int pos) {
 
   struct ListNode *prev = NULL;
 
-  for (int i = 1; temp != NULL && i < pos; i++) {
+  for (int i = 0; temp != NULL && i < pos; i++) {
     prev = temp;
     temp = temp->nextPtr;
   }
 
   if (temp == NULL) {
-    printf("Out of range");
+    printf("Out of range\n");
     return first;
   }
   prev->nextPtr = temp->nextPtr;
@@ -34,12 +47,30 @@ struct ListNode *deleteNode(struct ListNode *first, int pos) {
   return first;
 }
 
-void printList(struct ListNode *first) {
-  while (first != NULL) {
-    printf("%s", first->data);
-    printf(" ");
+struct ListNode *insertNode(struct ListNode *first, int index, char val) {
+  struct ListNode *newNode = malloc(sizeof(struct ListNode));
+  newNode->data = val;
+
+  if (index == 0) {
+    newNode->nextPtr = first;
+    return newNode;
   }
-  printf("*\n");
+
+  struct ListNode *current = first;
+
+  for (int i = 0; current != NULL && i < index - 1; i++) {
+    current = current->nextPtr;
+  }
+
+  if (current == NULL) {
+    printf("Invalid insert\n");
+    free(newNode);
+    return first;
+  }
+
+  newNode->nextPtr = current->nextPtr;
+  current->nextPtr = newNode;
+  return first;
 }
 
 int main() {
@@ -56,8 +87,8 @@ int main() {
   for (int i = 0; i < initNodes; i++) {
     struct ListNode *newNode = malloc(sizeof(struct ListNode));
 
-    printf("Enter data for node %d: ", i + 1);
-    scanf("%c", &val);
+    printf("Enter data for node %d: ", i);
+    scanf(" %c", &val);
     newNode->data = val;
     newNode->nextPtr = NULL;
     if (node == NULL) {
@@ -75,24 +106,27 @@ int main() {
     printf("3. Print List. \n");
     printf("4. Exit Program. \n");
     printf("User choice: ");
-    scanf("%d", input);
+    // scanf("%d", input);
 
-    if (input == 4)
+    if (scanf("%d", &input) != 1)
       break;
 
+    if (input == 4) {
+      printf("\nThank you! \n");
+      break;
+    }
     switch (input) {
     case 1: // Insert
-      printf("Index to insert");
-      scanf("%d", index);
+      printf("Index to insert ");
+      scanf("%d", &index);
       printf("data to insert: ");
-      scanf("%s", val);
-      node->data = val;
-      node = node->nextPtr;
+      scanf(" %c", &val);
+      node = insertNode(node, index, val);
       break;
     case 2: // delete
-      printf("Index to delete");
+      printf("Index to delete ");
       scanf("%d", &index);
-      printf("deleting %s from list\n", val);
+      printf("deleting %d from list...\n", index);
       node = deleteNode(node, index);
       break;
     case 3: // print
