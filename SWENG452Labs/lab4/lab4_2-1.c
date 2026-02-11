@@ -1,4 +1,6 @@
 //This file's likely good. We'll just remove this comment when its submitted.
+//I still need to test these on the PI before we turn anything in but it compiles and runs on the debian container
+//So I think we're good.
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
